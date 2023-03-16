@@ -58,6 +58,13 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Datbase : PostgreSQL
+[Highly Reliable] PostgreSQL supports foreign keys, stored procedures, joins, and views in several languages. It includes various data types and supports the storage of large objects, including pictures, sounds, and videos. Since it is open-source, it’s backed by developers who provide an unmatched maintenance system by regularly trying to find bugs and improving the software.
+
+[Flexible] PostgreSQL is open-source, hence the code is freely available to modify cross-platform — it can be suited to work on any platform, including Windows, Solaris, OS X, and Linux. In addition to that, it can accommodate several users simultaneously, blocking only concurrent updates of the same row.
+
+[Replication] PostgreSQL includes built-in synchronous replication, which ensures that the primary node would wait for each write until a duplicate node has written the data to its transaction log. The durability of the transaction can be specified per database, session, and user, irrespective of its synchronicity. This helps speed up the transaction because it doesn’t need to confirm whether the transaction is reaching a synchronous standby, especially when some flows don’t require these guarantees.
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
