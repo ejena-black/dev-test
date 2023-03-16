@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { UserCreationDto } from './dto/user-registration.req.dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
-// import { IsUser } from './interfaces/user.interface';
 
 @Injectable()
 export class UserService {
