@@ -15,7 +15,7 @@ export default class TypreOrmConfig {
       password: configService.get('DB_PASSWORD'),
       database: configService.get('DB_NAME'),
       entities: [User],
-      synchronize: true,
+      synchronize: configService.get('PROD'),
     };
   }
 }
