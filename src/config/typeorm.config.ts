@@ -3,6 +3,8 @@ import {
   TypeOrmModuleAsyncOptions,
   TypeOrmModuleOptions,
 } from '@nestjs/typeorm';
+import { Transaction } from 'src/modules/wallet/entities/transaction.entity';
+import { Wallet } from 'src/modules/wallet/entities/wallet.entity';
 import { User } from '../modules/user/user.entity';
 
 export default class TypreOrmConfig {
@@ -14,7 +16,7 @@ export default class TypreOrmConfig {
       username: configService.get('DB_USERNAME'),
       password: configService.get('DB_PASSWORD'),
       database: configService.get('DB_NAME'),
-      entities: [User],
+      entities: [User, Wallet, Transaction],
       synchronize: configService.get('PROD'),
     };
   }
