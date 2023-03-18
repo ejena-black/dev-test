@@ -111,13 +111,14 @@ export class WalletService {
   async getAllUsersTransactions(reqUser) {
     await this.verification.verifyAdmin(reqUser);
 
-    const allUserWallets = await Wallet.find({});
+    const allUserWallets = await Wallet.find({
+      relations: ['transactions'],
+    });
 
     return allUserWallets.map((userWallet) => {
-      const userId = userWallet.user;
       const transactions = userWallet.transactions;
       return {
-        user: userId,
+        id: userWallet.id,
         transactions: transactions,
       };
     });

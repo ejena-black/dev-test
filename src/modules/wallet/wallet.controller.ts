@@ -49,6 +49,6 @@ export class WalletController {
   @UseGuards(JwtAuthGuard)
   @Get('get_all_transactions')
   async getAllUsersTransactions(@Request() req) {
-    await this.walletService.getAllUsersTransactions(req.user);
+    return await this.walletService.getAllUsersTransactions(req.user);
   }
 }
