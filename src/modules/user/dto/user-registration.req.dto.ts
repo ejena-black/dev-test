@@ -3,9 +3,11 @@ import { MESSAGES, REGEX } from 'src/app.utils';
 
 export class UserCreationDto {
   @IsNotEmpty()
+  @Length(3, 15)
   firstName: string;
 
   @IsNotEmpty()
+  @Length(3, 15)
   lastName: string;
 
   @IsNotEmpty()

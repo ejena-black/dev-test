@@ -1,26 +1,43 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserCreationDto } from './dto/user-registration.req.dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
+import { Verification } from 'src/app.utils';
+import { WalletService } from '../wallet/wallet.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private walletService: WalletService,
+    private verification: Verification,
   ) {}
 
   // Signup User
   async signup(userDetails: UserCreationDto) {
-    const { password, ...userData } = userDetails;
-    const hashed = await bcrypt.hash(password, 10);
-    const newUser = { password: hashed, ...userData };
+    const { password, email, ...userData } = userDetails;
 
-    return await this.userRepository.save(newUser);
+    // check if user exists
+    const exists = await this.getUserByEmail(email);
+    if (exists)
+      throw new BadRequestException({
+        message: 'A user with this email already exists',
+      });
+
+    const hashed = await bcrypt.hash(password, 10);
+    const fixedData = { password: hashed, email, ...userData };
+    const newUser = await this.userRepository.save(fixedData);
+
+    // create wallet for user
+    await this.walletService.createUserWallet(newUser.id);
+
+    // new User
+    return newUser;
   }
 
-  // get User to validateUser for authService
+  // validate user for authService
   async getUserByEmail(email: string): Promise<User | undefined> {
     const user = await this.userRepository.findOneBy({ email });
     return user;
@@ -28,7 +45,7 @@ export class UserService {
 
   // get all users for all_users route
   async getAllUsers(reqUser: object): Promise<any> {
-    await this.verifyAdmin(reqUser);
+    await this.verification.verifyAdmin(reqUser);
 
     const allUsers = await this.userRepository.find();
 
@@ -41,7 +58,7 @@ export class UserService {
 
   // update user address
   async updateUser(userInfo, newAddress) {
-    await this.verifyUser(userInfo);
+    await this.verification.verifyAdmin(userInfo);
 
     const address = newAddress.address;
 
@@ -53,29 +70,14 @@ export class UserService {
     });
   }
 
-  async verifyUser(payload: any) {
-    if (payload.role === 'admin') throw new UnauthorizedException();
+  async hello(reqUser) {
+    await this.verification.verifyUser(reqUser);
+
+    const wallet = await this.walletService.getUserWalletById(reqUser.id);
 
     return {
-      id: payload.sub,
-      firstName: payload.firstName,
-      lastName: payload.lastName,
-      email: payload.email,
-      address: payload.address,
-      role: payload.role,
-    };
-  }
-
-  async verifyAdmin(payload: any) {
-    if (payload.role === 'user') throw new UnauthorizedException();
-
-    return {
-      id: payload.sub,
-      firstName: payload.firstName,
-      lastName: payload.lastName,
-      email: payload.email,
-      address: payload.address,
-      role: payload.role,
+      balance: wallet.balance,
+      transactions: wallet.transactions,
     };
   }
 }

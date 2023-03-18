@@ -32,7 +32,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('hello')
   async getUser(@Request() req): Promise<any> {
-    return await this.userService.verifyUser(req.user);
+    return await this.userService.hello(req.user);
   }
 
   @Post('signup')

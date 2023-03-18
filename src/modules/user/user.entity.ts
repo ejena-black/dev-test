@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Wallet } from '../wallet/entities/wallet.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -34,4 +42,8 @@ export class User extends BaseEntity {
 
   @Column()
   role: string;
+
+  // @OneToOne(() => Wallet)
+  // @JoinColumn()
+  // wallet: Wallet;
 }
